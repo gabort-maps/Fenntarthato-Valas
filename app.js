@@ -4,7 +4,7 @@ const {
   useEffect,
   useRef
 } = React;
- 
+
 /* ---------- persistence (localStorage on GitHub; safe no-op in sandbox) ---------- */
 const STORE_KEY = "fv_launch_control_v1";
 const store = {
@@ -27,7 +27,7 @@ const store = {
     } catch (e) {}
   }
 };
- 
+
 /* ---------- reference data ---------- */
 const GATES = [{
   key: "offer",
@@ -116,7 +116,7 @@ const WORKSTREAMS = [{
   owner: "Netmarketing / Coordinator",
   risk: "Low/Medium"
 }];
- 
+
 // [id, workstream, gate, type, task, owner, priority, risk, status, dependency, output, offset, duration]
 const RAW_TASKS = [["T001", "Strategy & offer lock", "offer", "Concrete", "Finalize group programme pricing", "Péter", "Critical", "High", "Open", "None", "Final price sheet", -56, 3], ["T002", "Strategy & offer lock", "offer", "Concrete", "Determine individual programme pricing", "Péter", "High", "Medium", "Open", "None", "Final individual offer", -56, 3], ["T003", "Strategy & offer lock", "offer", "Concrete", "Decide installment payment option", "Péter / Finance", "Critical", "High", "Open", "Pricing decision", "Payment terms", -55, 2], ["T004", "Strategy & offer lock", "offer", "Implied", "Reconcile conflicting launch dates", "Péter / Coordinator", "Critical", "High", "Open", "Leadership decision", "Single launch timeline", -56, 2], ["T005", "Strategy & offer lock", "offer", "Implied", "Reconcile conflicting pricing structures", "Péter / Coordinator", "Critical", "High", "Open", "Leadership decision", "Single pricing logic", -56, 2], ["T006", "Strategy & offer lock", "offer", "Implied", "Freeze offer claims for ads, webinar, landing pages and emails", "Péter / Netmarketing", "High", "High", "Open", "T001-T005", "Offer claim sheet", -52, 4], ["T007", "Client journey & service blueprint", "journey", "Concrete", "Map the 6-stage funnel from cold outreach to onboarding", "Coordinator / Netmarketing", "High", "Medium", "Open", "Offer lock", "Client journey map", -49, 5], ["T008", "Client journey & service blueprint", "journey", "Concrete", "Finalize 10-week curriculum and 6 modules", "Péter / Mentor lead", "High", "Medium", "Open", "Programme content", "Programme module map", -47, 7], ["T009", "Client journey & service blueprint", "journey", "Concrete", "Confirm 3-phase support model: Assessment, Preparation, Support", "Péter / Kata", "High", "Medium", "Open", "Service concept", "Service blueprint", -46, 4], ["T010", "Client journey & service blueprint", "journey", "Implied", "Create SOP for diagnostic-to-programme routing", "Coordinator / Mentor lead", "Critical", "High", "Open", "Triage rules", "Routing SOP", -42, 6], ["T011", "Client journey & service blueprint", "journey", "Implied", "Define mentor boundaries and exclusions", "Péter / Legal / Mentor lead", "Critical", "High", "Open", "Triage SOP", "Boundary note", -40, 5], ["T012", "Diagnostics, triage & escalation", "journey", "Concrete", "Administer 30–45 minute diagnostic questionnaire", "Mentors", "High", "Medium", "Open", "Questionnaire digitised", "Diagnostic workflow", -35, 5], ["T013", "Diagnostics, triage & escalation", "journey", "Concrete", "Screen for abuse and redirect to NANE / Eszter Alapítvány", "Mentor lead", "Critical", "High", "Open", "Triage SOP", "Abuse referral pathway", -35, 4], ["T014", "Diagnostics, triage & escalation", "journey", "Concrete", "Exclude acute clinical-crisis cases and refer to psychiatric care", "Mentor lead / Psychologist", "Critical", "High", "Open", "Triage SOP", "Clinical referral pathway", -35, 4], ["T015", "Diagnostics, triage & escalation", "journey", "Implied", "Train mentors on exact triage protocol and red flags", "Mentor lead", "Critical", "High", "Open", "Triage SOP", "Mentor training session", -28, 3], ["T016", "Diagnostics, triage & escalation", "journey", "Implied", "Convert Word questionnaire into secure digital format", "Web / GDPR owner", "Critical", "High", "Open", "Data workflow", "Secure digital questionnaire", -34, 8], ["T017", "Expert network & role governance", "delivery", "Concrete", "Coordinate external experts: lawyer, psychologist, child psychologist, mediator, financial adviser", "Kata / Coordinator", "High", "Medium", "Open", "Expert list", "Expert coordination plan", -35, 7], ["T018", "Expert network & role governance", "delivery", "Concrete", "Enforce 24-hour feedback/approval window for Péter on marketing materials", "Péter / Netmarketing", "High", "Medium", "Open", "Content calendar", "Approval workflow", -35, 30], ["T019", "Expert network & role governance", "delivery", "Implied", "Establish SLAs and availability schedules for named experts", "Coordinator", "High", "Medium", "Open", "Expert confirmation", "Expert SLA sheet", -32, 7], ["T020", "Expert network & role governance", "delivery", "Implied", "Brief experts on methodology and boundaries", "Péter / Coordinator", "High", "Medium", "Open", "Expert RACI", "Expert briefing pack", -28, 5], ["T021", "Marketing funnel & content production", "funnel", "Concrete", "Write, approve and schedule 18 social media posts", "Netmarketing / Péter", "High", "Medium", "Open", "Offer lock", "Approved posts", -35, 21], ["T022", "Marketing funnel & content production", "funnel", "Concrete", "Shoot, edit and subtitle 30 short-form videos", "Netmarketing / Videographer / Péter", "High", "High", "Open", "Script approval", "Video asset pack", -35, 24], ["T023", "Marketing funnel & content production", "funnel", "Concrete", "Publish 3 SEO blog articles", "Netmarketing", "Medium", "Low", "Open", "Content approval", "Published blogs", -28, 14], ["T024", "Marketing funnel & content production", "funnel", "Concrete", "Produce 5 new lead magnets", "Netmarketing / Péter", "High", "Medium", "Open", "Offer and audience priorities", "Lead magnet assets", -35, 21], ["T025", "Marketing funnel & content production", "funnel", "Concrete", "Launch Google Search and Meta Ads with A/B tested hooks", "Netmarketing PPC", "High", "High", "Open", "Tracking + landing pages", "Live campaigns", -7, 28], ["T026", "Marketing funnel & content production", "funnel", "Implied", "Create strict content scheduling grid and prioritise launch-critical assets", "Coordinator / Netmarketing", "High", "High", "Open", "Content inventory", "Launch-critical content calendar", -42, 7], ["T027", "Community & webinar operations", "funnel", "Concrete", "Manage closed Facebook group using 12-week calendar", "Péter / Community manager", "Medium", "Medium", "Open", "Group rules", "Community operations plan", -35, 84], ["T028", "Community & webinar operations", "funnel", "Concrete", "Host 60-minute webinar", "Péter", "High", "Medium", "Open", "Platform + deck + registration", "Webinar delivered", -12, 1], ["T029", "Community & webinar operations", "funnel", "Concrete", "Assign moderator to filter chat questions during webinar", "Marketing / Moderator", "Medium", "Medium", "Open", "Webinar runbook", "Moderator role confirmed", -13, 1], ["T030", "Community & webinar operations", "funnel", "Concrete", "Provide 48-hour webinar replay", "Netmarketing / Web", "Medium", "Low", "Open", "Recording and email sequence", "Replay live", -11, 3], ["T031", "Community & webinar operations", "funnel", "Implied", "Run webinar technical dry-run", "Coordinator / Netmarketing", "High", "Medium", "Open", "Platform selected", "Dry-run checklist", -16, 1], ["T032", "Technology, payments & automation", "funnel", "Concrete", "Set up general 5-day welcome email sequence in MailerLite", "Netmarketing / Web", "High", "Medium", "Open", "Email copy approved", "Automation live", -35, 5], ["T033", "Technology, payments & automation", "funnel", "Concrete", "Set up fathers' 5-day welcome email sequence in MailerLite", "Netmarketing / Web", "High", "Medium", "Open", "Email copy approved", "Automation live", -35, 5], ["T034", "Technology, payments & automation", "funnel", "Concrete", "Configure 6-email sales sequence", "Netmarketing / Web", "High", "Medium", "Open", "Offer lock", "Sales automation", -28, 5], ["T035", "Technology, payments & automation", "funnel", "Concrete", "Build lead magnet and programme landing pages", "Web / Netmarketing", "High", "High", "Open", "LP copy approved", "Landing pages live", -35, 14], ["T036", "Technology, payments & automation", "funnel", "Implied", "Connect payment gateway to course platform and email CRM", "Web / Finance", "Critical", "High", "Open", "Payment gateway selected", "Integrated checkout flow", -24, 7], ["T037", "Technology, payments & automation", "funnel", "Concrete", "Select payment gateway: SimplePay vs Stripe", "Web / Finance / Péter", "Critical", "High", "Open", "Finance decision", "Gateway decision", -56, 2], ["T038", "GDPR, consent & data handling", "journey", "Concrete", "Include GDPR text and unsubscribe links in all lead capture forms", "Netmarketing / Legal", "High", "Medium", "Open", "Legal review", "Compliant forms", -35, 7], ["T039", "GDPR, consent & data handling", "journey", "Concrete", "Secure explicit written consent for testimonials", "Netmarketing / Legal", "Medium", "Medium", "Open", "Consent wording", "Testimonial consent process", -28, 5], ["T040", "GDPR, consent & data handling", "journey", "Concrete", "Ensure client data is shared with experts strictly within GDPR rules", "GDPR owner / Coordinator", "Critical", "High", "Open", "Expert RACI + consent", "Expert data-sharing protocol", -35, 7], ["T041", "GDPR, consent & data handling", "journey", "Implied", "Establish secure encrypted storage and transmission protocol for diagnostics", "GDPR owner / Web", "Critical", "High", "Open", "Data owner appointed", "Data handling SOP", -42, 10], ["T042", "GDPR, consent & data handling", "journey", "Implied", "Legal review of Privacy Policy and Terms & Conditions", "Legal / GDPR owner", "Critical", "High", "Open", "Service workflow", "Legal sign-off", -35, 7], ["T043", "Sales, onboarding & customer support", "delivery", "Concrete", "Send 3–5 onboarding emails after purchase", "Kata / Netmarketing", "High", "Medium", "Open", "Payment trigger", "Onboarding sequence", 0, 3], ["T044", "Sales, onboarding & customer support", "delivery", "Concrete", "Host online kick-off live event", "Péter / Kata", "High", "Medium", "Open", "Participant list + programme access", "Kickoff delivered", 0, 1], ["T045", "Sales, onboarding & customer support", "delivery", "Concrete", "Answer Facebook group private messages within 24 hours", "Péter / Community support", "Medium", "Medium", "Open", "Support ownership", "Response SOP", 0, 14], ["T046", "Sales, onboarding & customer support", "delivery", "Concrete", "Process 2-week money-back guarantee if requested", "Kata / Finance", "Medium", "Medium", "Open", "Refund policy", "Refund workflow", 14, 7], ["T047", "Sales, onboarding & customer support", "delivery", "Implied", "Set up dedicated customer support inbox", "Kata / Support owner", "High", "Medium", "Open", "Support owner", "Support inbox live", -21, 4], ["T048", "Sales, onboarding & customer support", "delivery", "Concrete", "Populate e-learning platform with Week 1 content before kick-off", "Péter / Course admin", "High", "Medium", "Open", "Curriculum and platform", "Week 1 content live", -14, 7], ["T049", "Measurement & post-launch control", "funnel", "Concrete", "Configure UTM tracking for all URLs", "Netmarketing analytics", "High", "Medium", "Open", "URL list", "UTM framework", -28, 4], ["T050", "Measurement & post-launch control", "funnel", "Concrete", "Set up GA4 conversions", "Netmarketing analytics", "High", "Medium", "Open", "Landing pages", "GA4 conversion events", -28, 4], ["T051", "Measurement & post-launch control", "funnel", "Concrete", "Configure Meta Pixel events", "Netmarketing analytics", "High", "Medium", "Open", "Landing pages", "Pixel events", -28, 4], ["T052", "Measurement & post-launch control", "funnel", "Concrete", "Monitor KPIs: CPL < 4,500 Ft and email open rate >35%", "Netmarketing / Coordinator", "Medium", "Low", "Open", "Dashboard setup", "Weekly KPI report", -7, 35], ["T053", "Measurement & post-launch control", "funnel", "Concrete", "Send NPS survey 2 weeks after programme start", "Kata / Netmarketing", "Medium", "Low", "Open", "Participant list", "NPS results", 14, 1], ["T054", "Measurement & post-launch control", "funnel", "Implied", "Reallocate ad budget based on A/B test performance", "Netmarketing PPC", "Medium", "Low", "Open", "Campaign data", "Budget optimisation log", -1, 28]];
 const taskFromRaw = r => ({
@@ -164,7 +164,7 @@ const RUNBOOK = [["Day -14", "Readiness gate review", "Check offer, journey, fun
 const JOURNEY = [["1. Awareness", "Sees content, ad, blog, video or podcast", "Drive traffic to lead magnet or community", "Netmarketing / Péter", "Claims must match boundaries"], ["2. Lead magnet", "Downloads free resource", "Capture consent and trigger email sequence", "Netmarketing / Web", "GDPR consent required"], ["3. Nurturing", "Reads emails, joins Facebook group", "Build trust and educate", "Péter / Community manager", "Community moderation"], ["4. Diagnostic", "Completes 30–45 minute questionnaire", "Assess emotional, legal, financial, parenting and risk baseline", "Mentor lead", "Sensitive data + triage"], ["5. Triage / routing", "Receives next-step recommendation", "Route to group, individual, expert or external support", "Mentor lead / Coordinator", "Abuse/clinical red flags"], ["6. Webinar", "Registers and attends live webinar", "Deliver value and pitch programme", "Péter / Moderator", "Tech and sales clarity"], ["7. Purchase", "Buys group or individual programme", "Process payment, confirmation and access", "Web / Finance / Kata", "Payment automation"], ["8. Onboarding", "Receives emails and joins kickoff", "Set expectations, access, rules and support routes", "Kata / Péter", "Client anxiety/support"], ["9. Delivery", "Attends sessions / workshops", "Provide group or individual preparation", "Péter / Mentors / Experts", "Role boundaries"], ["10. Learning loop", "Completes NPS and feedback", "Measure experience and improve funnel/service", "Kata / Netmarketing", "Consent for testimonials"]];
 const STATUS_OPTS = ["Open", "In progress", "At risk", "Blocked", "Done", "Deferred"];
 const PRIORITY_OPTS = ["Critical", "High", "Medium", "Low"];
- 
+
 // Editable owner / team directory. Owners on tasks, decisions and risks are chosen from this.
 const TEAM_DEF = [["P01", "Péter", "Founder, lead mentor"], ["P02", "Kata", "Operations & client success"], ["P03", "Coordinator", "Launch coordinator"], ["P04", "Netmarketing", "Marketing agency"], ["P05", "Web", "Web & development"], ["P06", "Finance", "Finance"], ["P07", "Legal", "Legal counsel"], ["P08", "GDPR owner", "Data protection"], ["P09", "Mentor lead", "Mentor team lead"], ["P10", "Psychologist", "Clinical screening"], ["P11", "Child psychologist", "Child protection"], ["P12", "Moderator", "Webinar / community moderation"], ["P13", "Community manager", "Facebook group"], ["P14", "Support owner", "Customer support"], ["P15", "Course admin", "E-learning platform"], ["P16", "Analytics", "Tracking & measurement"], ["P17", "Videographer", "Video production"]];
 const teamFromRaw = r => ({
@@ -225,7 +225,7 @@ function OwnerPicker({
     }
   }, "Add people on the Team tab first."));
 }
- 
+
 /* ---------- helpers ---------- */
 const DAY = 86400000;
 const fmt = d => d.toLocaleDateString("en-GB", {
@@ -307,7 +307,7 @@ function sevDot(level) {
     }
   });
 }
- 
+
 /* ---------- small UI atoms ---------- */
 function Pill({
   children,
@@ -357,7 +357,7 @@ function StatusSelect({
     }
   }, o)));
 }
- 
+
 /* ---------- Dashboard ---------- */
 function GateCard({
   gate,
@@ -458,7 +458,7 @@ function GateCard({
     }
   }, "Owner \xB7 ", gate.owner));
 }
- 
+
 // Automatic gate colour from the underlying work.
 function computeGate(key, tasks, decisions) {
   const t = tasks.filter(x => x.gate === key);
@@ -795,7 +795,7 @@ function SectionTitle({
     }
   }, children);
 }
- 
+
 /* ---------- Tasks ---------- */
 function TasksView({
   state,
@@ -1347,7 +1347,7 @@ function Select({
     value: v
   }, l)));
 }
- 
+
 /* ---------- Timeline / Gantt ---------- */
 function Timeline({
   tasks,
@@ -1371,7 +1371,7 @@ function Timeline({
   const pos = d => clamp((startOfDay(d) - ganttStart) / DAY / total * 100);
   const sorted = [...tasks].sort((a, b) => a.start - b.start);
   const chartMin = Math.max(640, total * 11); // ~11px per day so bars are legible
- 
+
   return /*#__PURE__*/React.createElement("div", {
     style: {
       background: "var(--card)",
@@ -1576,7 +1576,7 @@ function Timeline({
     }
   }), "Today")));
 }
- 
+
 /* ---------- generic record editor (decisions / risks) ---------- */
 function RecordEditor({
   title,
@@ -1883,7 +1883,7 @@ const RISK_FIELDS = [{
   label: "Escalation path",
   type: "text"
 }];
- 
+
 /* ---------- Decisions ---------- */
 function DecisionsView({
   state,
@@ -2019,7 +2019,7 @@ function DecisionsView({
     onClose: () => setEd(null)
   }));
 }
- 
+
 /* ---------- Risks ---------- */
 function RisksView({
   state,
@@ -2161,7 +2161,7 @@ function RisksView({
     onClose: () => setEd(null)
   }));
 }
- 
+
 /* ---------- Checklists ---------- */
 function Checklist({
   title,
@@ -2281,7 +2281,7 @@ function ChecklistsView({
     setState: setState
   }));
 }
- 
+
 /* ---------- Team / owners directory ---------- */
 const TEAM_FIELDS = [{
   key: "name",
@@ -2420,7 +2420,7 @@ function TeamView({
     onClose: () => setEd(null)
   }));
 }
- 
+
 /* ---------- Reference (journey, RACI-ish, runbook) ---------- */
 function ReferenceView({
   state,
@@ -2527,7 +2527,7 @@ function ReferenceView({
     fg: "var(--ink-soft)"
   }, d[3]))))));
 }
- 
+
 /* ---------- App shell ---------- */
 const NAV = [["dashboard", "Dashboard"], ["tasks", "Tasks"], ["timeline", "Timeline"], ["decisions", "Decisions"], ["risks", "Risks"], ["checklists", "Checklists"], ["reference", "Journey & Runbook"], ["team", "Team"]];
 const MILESTONES_DEF = [{
@@ -2578,7 +2578,7 @@ function defaultState() {
     runbook: {}
   };
 }
- 
+
 // Bring older saved data forward without losing the user's edits.
 function migrate(s) {
   const base = defaultState();
@@ -2630,7 +2630,7 @@ function App() {
     return () => clearTimeout(t);
   }, [state]);
   const launchDate = useMemo(() => startOfDay(new Date(state.launch + "T00:00:00")), [state.launch]);
- 
+
   // computed task list with live dates from each task's own offset + duration
   const tasks = useMemo(() => state.tasks.map(t => {
     const start = addDays(launchDate, Number(t.offset) || 0);
@@ -2641,13 +2641,13 @@ function App() {
       due
     };
   }), [launchDate, state.tasks]);
- 
+
   // milestones come from editable offsets in state
   const milestones = useMemo(() => state.milestones.map(m => ({
     ...m,
     date: addDays(launchDate, Number(m.offset) || 0)
   })), [state.milestones, launchDate]);
- 
+
   // gantt window stretches to cover every task and milestone, never clipping bars
   const {
     ganttStart,
@@ -2858,4 +2858,3 @@ function App() {
   }, "Single source of operational truth. Change one launch date; all task dates and the timeline recalculate. Edits save automatically in this browser."));
 }
 ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
- 
