@@ -1,10 +1,639 @@
+
+Claude finished the response
+
+Fenntarthato_Valas_Launch_Control_Workbook_v0_2_interactive.xlsx
+xlsx
+
+
+Fenntarthato_Valas_Workbook_Working_Guide_v0_1.docx
+docx
+
+Please review this pack, just confirm that you understand the process.
+just say yes or no.
+
+19:32
+
+Verified workbook structure and tabs alignment
+Verified workbook structure and tabs alignment
+Yes.
+
+I've read both files and understand the process. The workbook is a launch control system for the Fenntartható Válás Hungarian launch: Control_Settings holds the single launch date that drives all milestones, the Master_Task_List is the operational register feeding the Gantt_View, and the Dashboard surfaces the four launch gates (offer locked, client journey safe, funnel working, delivery team ready), top risks and open decisions. The core rule is don't scale marketing until those four gates pass, with a weekly top-down cadence (gates → decisions → risks → blocked tasks → next 7 days) and escalation paths that treat GDPR and clinical/abuse triage as launch gates, not admin.
+
+The workbook tabs line up with the guide, with a couple of minor name differences (the guide calls them Decision_Log / Risks_Issues_Log / Client_Journey_Map; the file has Decisions_Log / Risks_Issues / Client_Journey). Ready when you are.
+
+do you think you can improve the the excel sheet? Both visually and functionality
+Do you think you can create an interactive web based application for better sharing and usability.
+
+do not start, just think it through and tell me if its feasible or not?
+I would prefer the web based application, if its easily doable.
+
+Yout assess the situation, do not start to build anything
+
+19:38
+
+Weighed Excel enhancement against ambitious web application feasibility
+Weighed Excel enhancement against ambitious web application feasibility
+Good question — let me think through both options honestly.
+
+Excel improvements are definitely doable. Better conditional formatting, color-coded gate indicators, cleaner typography, data validation dropdowns, protected formula cells, maybe sparklines. But at the end of the day it's still an .xlsx file that needs to be emailed around, and most of the "interactivity" is just Excel conventions that people may or may not follow.
+
+Web-based application is the more interesting option, and yes, it's feasible within what I can build here — a single React artifact with persistent storage so data survives across sessions. Here's my honest breakdown:
+
+What would work well: a tab-based layout mirroring the workbook structure, with the Dashboard as the landing view showing the four launch gates as live status cards, pulling from task and risk data underneath. The Master Task List becomes a filterable, sortable table with inline status editing. The Gantt View renders as a real visual timeline. Decision and Risk logs get proper status workflows. Checklists (GDPR, Tech, Launch Week) become interactive tick-lists. The Control_Settings date logic can drive calculated milestone dates in real time.
+
+What's genuinely hard: replicating all 16 tabs at full fidelity in one pass would produce something enormous and fragile. A smarter approach would be to prioritize the 6–7 most interactive tabs (Dashboard, Master Task List, Gantt, Decisions, Risks, Control Settings, and one or two checklists) and treat the rest as reference views.
+
+The main trade-off: the app would be shareable via a single link and far more usable on any device, but it lives inside Claude's artifact system — it's not a hosted SaaS product. For a small team coordinating a launch, that's probably fine.
+
+My recommendation: go with the web app. It plays to the strengths of what the workbook is trying to do — give a coordinator and a small team a shared, live view of launch readiness. Want me to start building it?
+
+Can I post it on my github, or what do you mean by Claude's artifact system
+
+19:40
+
+Clarified deployment flexibility and storage backend distinctions
+Clarified deployment flexibility and storage backend distinctions
+Good clarification — let me be precise.
+
+What I build here renders inside this chat as an interactive app. But the underlying code is just a standard React file. You can absolutely take it and host it yourself. A few options:
+
+GitHub Pages — free, simple, works perfectly for a single-page app like this. You'd have a shareable URL anyone can open in a browser.
+
+Vercel / Netlify — equally easy, just drag and drop or connect your GitHub repo.
+
+Just the raw HTML file — I can also produce a self-contained HTML version you host anywhere or even open locally.
+
+The one thing that changes is data storage. Inside Claude's system I have a built-in persistence layer. Once you move it to GitHub Pages, the app would use the browser's localStorage instead — which means each person's browser holds its own copy of the data. That's fine for a small team where one coordinator is the primary operator (which is exactly how the Working Guide describes the workflow).
+
+If you eventually need multiple people editing the same live data simultaneously, you'd need a backend (a Google Sheet as a database, Firebase, Supabase, etc.) — but that's a future problem, not a launch blocker.
+
+So the practical answer: yes, I build it here, you copy the code to a GitHub repo, enable GitHub Pages, and you have a shareable URL with the full interactive launch control system. Want me to go ahead?
+
+Lets give it try, I am interested in your solution
+
+19:42
+
+Architected self-contained HTML solution balancing Claude preview constraints with GitHub deployment needs
+Architected self-contained HTML solution balancing Claude preview constraints with GitHub deployment needs
+Let me read the actual workbook data thoroughly first, and check the design skill, before building.
+
+
+Harvested workbook data to populate application content
+Harvested workbook data to populate application content
+Now let me extract the full content of every sheet so the app is seeded with your real data.
+
+
+Verifying HTML syntax and parsing validity
+Verifying HTML syntax and parsing validity
+This is the full launch-control system. I've built it as a single self-contained HTML file (React + Tailwind via CDN, zero build step) so you can drop it straight onto GitHub Pages. Let me build it now.
+
+
+Validated syntax and prepared solution for presentation
+Validated syntax and prepared solution for presentation
+Let me copy it to outputs and present it.
+
+
+Ran a command, read a file
+Ran a command, read a file
+Here's the working launch control app — a single self-contained file (index.html), seeded with all your real workbook data.
+
+What it does
+
+Dashboard — the launch objective, overall readiness, and the four gates as live cards. Each gate has an editable RAG selector and shows supporting metrics underneath (task completion %, open decisions, high risks) so the colour is informed, not arbitrary. Below: immediate decisions, top high-severity risks, and the calculated milestones.
+One control date — change the launch date in the header and every task's start/due date and the entire timeline recalculate instantly, exactly like Control_Settings!B5 in the workbook.
+Tasks — all 54 tasks, searchable and filterable by gate, status, and owner, with inline status editing (Open → In progress → At risk → Blocked → Done → Deferred).
+Timeline — a real visual Gantt generated from the task dates, colour-coded by gate, with dotted milestone lines (campaign start, webinar, cart open/close, programme start, NPS) and a "today" marker.
+Decisions and Risks — the full logs with editable status, sorted with the urgent ones first.
+Checklists — GDPR/triage and tech automation as interactive tick-lists, with the sensitive-data launch-gate warning kept prominent.
+Journey & Runbook — the client journey map and the day-by-day launch-week runbook as a checklist.
+Export CSV and Reset buttons; edits save automatically.
+On the storage / GitHub point I flagged earlier: the app uses your browser's localStorage. Inside this chat preview, edits won't survive a full reload (the sandbox blocks persistence) — but once you put it on GitHub Pages, persistence works normally, per browser. To deploy: create a repo, drop this file in named index.html, then enable Pages in Settings → Pages → deploy from main branch. You'll get a shareable URL in a minute or two.
+
+Two things worth a quick decision when you've looked it over: whether you want gate RAG to auto-derive from task completion rather than stay manual, and whether the team needs shared live data (multiple editors) — which would need a small backend later. Neither is a blocker for getting this online.
+
+
+Index
+Code · HTML 
+Warning: cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
+Warning: You are using the in-browser Babel transformer. Be sure to precompile your scripts for production - https://babeljs.io/docs/setup/
+19:54
+
+Evaluated warnings as cosmetic, planned production-ready build solution
+Evaluated warnings as cosmetic, planned production-ready build solution
+Those two warnings are harmless — they're console-only notices (your end users never see them unless they open dev tools), and the app runs fine as-is. They appear purely because Tailwind and Babel are being compiled in the browser at load time.
+
+But since you're putting this on GitHub for real use, the clean fix is to precompile: do the Babel/Tailwind work ahead of time so the browser just loads finished files. I'll do that for you now — the result has zero warnings, loads faster, and is still drag-and-drop (no build step on your end). Let me produce it.
+
+
+Verified transpilation success and validated output integrity
+Verified transpilation success and validated output integrity
+Compiles clean, no leftover JSX, valid syntax. Now I'll build the production index.html — plain CSS replacing the Tailwind utilities, React via CDN (production build, no warnings), and the precompiled app.js.
+
+
+Diagnosed grep command behavior and validation approach
+Diagnosed grep command behavior and validation approach
+Done — both warnings are gone. The app is now two files instead of one:
+
+index.html — markup, fonts, and plain CSS (the Tailwind utilities I used are now written out as real CSS rules, so no Tailwind CDN). It loads React from a CDN's production build, which doesn't warn.
+app.js — your whole application, precompiled from JSX to plain JavaScript ahead of time, so the browser never runs Babel.
+Functionally it's identical to what you saw — same dashboard, gates, live timeline, editable tasks/decisions/risks, checklists. It just loads faster and has a clean console.
+
+Deploying both files to GitHub Pages: put index.html and app.js together in the same folder at the root of your repo (they must sit side by side, since index.html loads app.js by relative path). Then Settings → Pages → deploy from your main branch. That's it.
+
+One small note: opening index.html by double-clicking it from your file system (the file:// protocol) may block app.js from loading in some browsers for security reasons — but served over GitHub Pages (or any http(s) URL) it works normally. If you want a quick local check before pushing, the original single-file version I sent earlier is handy for that since everything's inline.
+
+
+Index
+Code · HTML 
+
+App
+JS 
+OK, and how does this tool really works, what is interactive and what is fixed?
+what is the JS file what does it do?
+
+19:59
+
+Delineated interactive features, computed values, and fixed architecture components
+Delineated interactive features, computed values, and fixed architecture components
+Good question to ask before you rely on it. Let me walk through it plainly.
+
+The two files and how they relate
+
+Think of index.html as an empty picture frame plus the colour scheme — it has almost nothing in it, just a blank <div> and the styling (fonts, colours, spacing). On its own it shows a blank page.
+
+app.js is the brain and the contents. It holds all your data (the 54 tasks, 11 decisions, 10 risks, the checklists, the journey, the runbook), it draws everything you see onto that blank frame, it listens for your clicks, and it recalculates and re-draws the screen whenever you change something. When the page loads, index.html calls app.js, and app.js builds the whole interface in front of you. So app.js is the tool; index.html is just the shell it lives in.
+
+There's also a third, invisible piece: your browser's local storage. Every time you change something, app.js quietly writes the current state there, so reopening the page brings your edits back. (This is per-browser and per-device — more on that limitation below.)
+
+What's genuinely interactive — you change it, it responds
+
+The launch date at the top. This is the master control. Change it and every task's start and due date, the whole timeline, and all six milestones recalculate instantly.
+Task statuses (Open → In progress → At risk → Blocked → Done → Deferred) via the dropdowns.
+The gate colours (Red / Amber / Green) on the dashboard.
+Decision statuses and risk statuses.
+The checklist tick-boxes (GDPR/triage, tech, launch-week runbook).
+Filtering, searching and sorting the task list, and switching tabs.
+The Export CSV and Reset buttons.
+What's computed — it changes on its own, but you can't type into it directly
+
+These are derived from the things above, so they update automatically:
+
+Every task's start and due date (calculated from the launch date plus a built-in offset and duration).
+The milestone dates and the Gantt bars' positions and lengths.
+The readiness percentage, and the counts of red gates, open decisions, high risks, and blocked tasks.
+The little progress bars and metrics under each gate.
+What's fixed — baked into app.js, not editable in the interface
+
+The content of the lists is hardcoded. You can change a task's status, but you can't (in the app) add a new task, delete one, rename it, change its owner, or change its timing offset. The same goes for the decision and risk wording, the checklist items, the journey stages, the runbook, the gate names and questions. To change any of those, the file itself has to be edited — either you editing app.js, or me regenerating it for you.
+
+The one honest limitation to keep in mind
+
+The data lives in your browser only. It is not a shared database. If Kata opens the same GitHub link on her laptop, she starts from the original values and her edits don't reach yours — each browser keeps its own copy. That's fine if one coordinator is the single operator (which is how your Working Guide describes it). If you need several people editing the same live data, that's the "small backend later" point I flagged — a real change, not a tweak.
+
+Want me to make any of the currently-fixed parts editable in the app (for example, adding/editing tasks and owners), or is the status-tracking level right for now?
+
+yes, that would be great, what would also be important if the tasks time requirements can be edited, if I am not mistaken currently the tasks have a fixed timing needs
+
+20:05
+
+Architected editable task system with timing fields and migration strategy
+Architected editable task system with timing fields and migration strategy
+Right — currently each task's timing (how many days before/after launch it starts, and how long it lasts) is baked into the file. You can change a task's status but not its schedule or its text. Let me make tasks fully editable: add, edit, delete, change owner/priority/etc., and crucially edit the start offset and duration so the timeline reflects your real plan.
+
+Let me look at the exact sections I need to change.
+
+
+Architected state migration and task editing interface enhancements
+Architected state migration and task editing interface enhancements
+Now the TasksView — add the editor modal, the add/edit/delete handlers, and an edit button per row.
+
+
+Validating core logic through functional smoke testing
+Validating core logic through functional smoke testing
+TasksView now needs launchDate passed in. Let me update the call site.
+
+
+Edited 2 files
+Edited 2 files
+Now recompile and rebuild, with a check that the optional-chaining I used (?.) transpiles cleanly.
+
+
+Validated code logic and prepared build files for output
+Validated code logic and prepared build files for output
+Recompiles clean (220 elements, no leftover JSX). Let me ship the updated build.
+
+
+Ran a command, read a file
+Ran a command, read a file
+Done. Tasks are now fully editable, including their timing. index.html is unchanged — only app.js was updated, so on GitHub you just replace that one file.
+
+What's new on the Tasks tab
+
+A + Add task button (top right) creates a new task with a fresh ID.
+Each row has a pencil (✎) button that opens an editor.
+In the editor you can change the task text, workstream (the gate fills in automatically to stay consistent), owner, dependency, priority, risk, status, and deliverable — and delete the task.
+The timing fix you asked about
+
+Each task now carries its own editable schedule, shown in a highlighted block in the editor:
+
+Start (days from launch) — how many days before or after the launch date the task begins. Negative means before (e.g. −56 = 56 days before launch); positive means after.
+Duration (days) — how long it runs.
+As you type, the editor shows a live preview of the resulting calendar dates ("→ 07 Jul 2026 to 09 Jul 2026"). Because the timing is stored relative to the launch date rather than as fixed calendar dates, two things stay true: editing a task's offset/duration instantly moves its bar on the Timeline, and moving the master launch date still shifts everything together correctly. The task list rows now also show each task's start→due and duration inline so you can see the schedule at a glance.
+
+Everything persists in your browser as before, and your earlier edits carry over — I added a quiet migration so existing saved data isn't wiped by the new task format.
+
+One thing worth flagging honestly: the four milestones (campaign start, webinar, cart open/close, NPS) are still fixed at their standard offsets from launch. If you'd like those editable too — or want the gate colours to derive automatically from task completion rather than being set by hand — those are natural next steps whenever you want them.
+
+
+App
+JS 
+
+Index
+Code · HTML 
+yes please make as much as possible editable and automatic, also fix the headers so when people scroll they can still see the header rows, also on the timeline the tasks are not fully visible?
+
+20:22
+
+Architected editable milestones, automatic gates, sticky headers, and timeline visibility improvements
+Architected editable milestones, automatic gates, sticky headers, and timeline visibility improvements
+Good batch of fixes. Let me tackle all of it: sticky table/timeline headers, a timeline that shows full task names and never clips bars, editable milestones, automatic gate colours (with optional manual override), and add/edit/delete for decisions and risks. Let me find the relevant sections first.
+
+
+Architected editable component with automatic override functionality
+Architected editable component with automatic override functionality
+Now I'll make the edits. First, GateCard with automatic colour + optional override:
+
+
+GateCard: automatic RAG with optional manual override
+GateCard: automatic RAG with optional manual override
+Now the Dashboard — wire gates to auto/override, fix metrics, and make milestones editable:
+
+
+Examined Tasks table to implement sticky headers
+Examined Tasks table to implement sticky headers
+Now the sticky table header. Let me view the current Tasks table container:
+
+
+Refactoring timeline layout for improved task visibility
+Refactoring timeline layout for improved task visibility
+Now the Timeline — view it to fix label clipping, bar clipping, and make the week header sticky:
+
+
+Architecting reusable modal component for record editing
+Architecting reusable modal component for record editing
+Now the Decisions and Risks views — add full add/edit/delete. Let me view them:
+
+
+Strategized updates to state management and interface visibility improvements
+Strategized updates to state management and interface visibility improvements
+Now update state defaults, migration, and the App (milestones from state, gantt covering all tasks, sticky nav):
+
+
+Recompiling code and verifying implementation details
+Recompiling code and verifying implementation details
+On reflection, a sticky nav at top:0 would overlap the sticky table header (also at top:0) and hide it. Cleaner to keep the nav normal and let the in-content headers own top:0. Reverting:
+
+
+Verified code safety and eliminated obsolete state references
+Verified code safety and eliminated obsolete state references
+Let me check for any leftover references to the old state.gates, then recompile.
+
+
+Testing component rendering with headless sanity checks
+Testing component rendering with headless sanity checks
+Found a real bug: the task row's gate dot still reads the removed state.gates. Let me fix it to use the computed gate colour:
+
+
+Audited component state keys for runtime consistency
+Audited component state keys for runtime consistency
+Recompiling and auditing every state.X reference against the new state shape:
+
+
+Architecting a test harness to render components server-side
+Architecting a test harness to render components server-side
+Clean. Now let me actually render every view through React's server renderer to catch any runtime errors before shipping.
+
+
+Ran 2 commands
+Ran 2 commands
+Every view renders, migration preserves old edits, and the automatic gate logic computes correctly. Shipping the updated app.js:
+
+
+Ran a command, read a file
+Ran a command, read a file
+All done — only app.js changed, so on GitHub you just swap that one file. Here's everything in this round:
+
+Sticky headers The Tasks column header now stays pinned to the top of the screen while you scroll the long list. On the Timeline, the task-name column is pinned to the left so labels stay visible while you scroll the weeks sideways, and the week-date axis stays at the top.
+
+Timeline visibility fixed Task names now wrap to two lines in a wider left column (with the full text on hover) instead of being cut off with "…". The chart now stretches to cover every task and milestone, so long-running bars like the 12-week Facebook group no longer run off the edge, and bars are clamped so they can't overflow. Done tasks show faded, blocked tasks get a red outline.
+
+Automatic gate colours The four gate colours are now computed from the underlying work, not set by hand: a gate goes Red if it has an open immediate decision or a blocked task, Green once all its tasks are done with no open immediate decision, otherwise Amber. Each gate still has a small dropdown if you want to force a colour — leave it on "Auto" to let it track reality. A line under the gates explains the rule.
+
+Editable milestones "Key milestones" on the Dashboard has an Edit timing button. Each milestone (campaign start, webinar, cart open/close, programme start, NPS) becomes a number field — days from launch — with the resulting date shown live. They feed the Timeline's dotted marker lines.
+
+Decisions and Risks are now fully editable Both tabs have + Add buttons and a pencil on each card. You can edit every field (text, owner, conflict/impact, gate, window, severity, likelihood, mitigation, escalation, etc.) and delete entries. Because gates derive from decisions, resolving or adding an immediate decision automatically moves the relevant gate colour.
+
+Your earlier edits carry over — I bumped the saved-data version and the migration keeps existing statuses, the launch date, and any milestone offsets you'd changed.
+
+What's still fixed: the client-journey stages, the launch-week runbook text, and the four gate definitions themselves (these are the structural backbone). The checklists are tick-only, not yet add-your-own-item. Any of those can become editable too — just say which. And the one unchanged constraint remains the shared-data point: this is still per-browser storage, so if several people need to edit the same live plan, that's the backend step we discussed.
+
+
+App
+JS 
+
+Index
+Code · HTML 
+OK, 
+can you make the decisions editable as you did with the tasks?
+can you make the Risks editable as you did with the tasks?
+The headers a still not floating, so when I scroll down the header disappears
+offer a bilingual solution, I would like to have all words and phrases exported to en excel sheet with Hungarian version, and when the excel sheet is approved by the Hungarian  editor, I can share it with you and you create the Hungarian version, the excel should follow the HTML logic, like headers, dashboard, tasks, timeline etc, for easier editing.
+Create editable owner/team database on a separate tab, the owners can be added to tasks, decision from select list
+
+21:40
+
+Architecting TeamView component placement within app structure
+Architecting TeamView component placement within app structure
+This is a big, well-defined batch. Let me handle it in order. First, let me find the anchors I need.
+
+
+Ran a command, edited a file
+Ran a command, edited a file
+Now wire the owner picker into the Task editor. Let me view its Owner field:
+
+
+Edited 3 files, viewed 2 files
+Edited 3 files, viewed 2 files
+Now the RecordEditor — add an owners field type and a team prop, and update the decision/risk field defs and call sites:
+
+
+Viewed a file, edited a file
+Viewed a file, edited a file
+Now switch the owner fields to type owners, and pass team into both RecordEditor call sites:
+
+
+Architected team management component with editable records and task assignments
+Architected team management component with editable records and task assignments
+Now add the Team tab view, register it in nav, and wire state. Let me view around ReferenceView/nav:
+
+
+Edited 3 files, viewed a file
+Edited 3 files, viewed a file
+Now add team to state defaults and migration (bump to v4):
+
+
+Architected sticky header solution using scroll containers
+Architected sticky header solution using scroll containers
+Now the floating-header fix. The reliable cross-environment solution is to make the Tasks table and Timeline their own scroll boxes (so the sticky header sticks within them even when the page/iframe auto-expands). Let me apply that:
+
+
+Ran a command, viewed a file, edited a file
+Ran a command, viewed a file, edited a file
+Now the Timeline scroll container — bound its height so the week header floats vertically while the left labels stay pinned:
+
+
+Orchestrated test compilation incorporating new components and migration updates
+Orchestrated test compilation incorporating new components and migration updates
+Recompile and run the full render + migration smoke test (now including Team and the owner picker):
+
+
+Extracting strings from source data for bilingual localization
+Extracting strings from source data for bilingual localization
+All views render and migration carries old data into the new shape. Shipping app.js, then I'll build the bilingual Excel.
+
+
+Copy verified app.js to outputs
+Copy verified app.js to outputs
+Now the bilingual Excel. Let me read the xlsx skill first.
+
+
+Architected bilingual Excel workbook with structured sheets mirroring app logic
+Architected bilingual Excel workbook with structured sheets mirroring app logic
+Now the bilingual Excel. First I'll extract the exact content arrays from the app so the English column matches the app verbatim:
+
+
+Architected bilingual Excel workbook with styled sheets and editable databases
+Architected bilingual Excel workbook with styled sheets and editable databases
+Workbook is clean (0 errors). Let me present everything.
+
+
+Presented 3 files
+Presented 3 files
+All five items are done. Again only app.js changed in the app (swap that one file on GitHub); the new Excel is a separate deliverable.
+
+Decisions & Risks — editable like tasks Both tabs have a + Add button and a pencil on every card, opening the same kind of editor modal as tasks: edit every field, or delete. (This was added last round, but the owner field is now a proper picker — see below — so it's worth re-checking.)
+
+Owner / team database (new "Team" tab) A dedicated tab lists people and teams (seeded with Péter, Kata, Coordinator, Netmarketing, Web, Finance, Legal, GDPR owner, Mentor lead, and so on), each with a role, plus a live count of how many tasks/decisions/risks they own. You can add, edit, and delete people there. In the task, decision, and risk editors, Owner is now a tap-to-select chip list drawn from that database — and because tasks often have two owners, you can select several (they're stored as "Péter / Coordinator", matching the original data). Any existing owner not in the database shows as an amber chip so nothing is lost.
+
+Floating headers — the real fix The previous attempt relied on the page scrolling, which doesn't work inside the preview's auto-expanding frame. Now the Tasks table and the Timeline are each their own bounded scroll box (about 70% of screen height): the column header stays pinned at the top while you scroll the rows inside, and on the Timeline the task-name column stays pinned on the left while you scroll the weeks. This works the same in the preview and on GitHub.
+
+Bilingual solution + the Excel Fenntarthato_Valas_Localization_EN_HU.xlsx contains every word and phrase in the app, organised into sheets that mirror the app's structure: README, UI (buttons/menus/headings), Enums, Gates, Workstreams, Tasks, Decisions, Risks, Checklists, Journey, Runbook, Team. Grey columns are read-only reference (IDs, English, owners) and the yellow columns are where the Hungarian editor types the translation. The English column is pulled verbatim from the app, so it's guaranteed to match.
+
+The workflow from here: your editor fills the yellow columns and approves it, you send it back, and I drop the Hungarian into a string dictionary keyed to those IDs and add an EN / HU toggle to the app. I built the export keyed by stable IDs precisely so that re-import is mechanical and safe. I didn't wire the language toggle yet on purpose — it's best done with the approved Hungarian text in hand so I can verify diacritics and length (Hungarian runs ~15–20% longer, which can affect button widths).
+
+One small thing to flag honestly: proper nouns and a few brand-style phrases (the app/project name, "NPS") are in the sheet too, but I left notes suggesting they usually stay as-is — your editor can decide per row by leaving the Hungarian cell blank.
+
+
+Fenntarthato valas localization en hu
+Spreadsheet · XLSX 
+
+App
+JS 
+
+Index
+Code · HTML 
+OK, 
+can you make the decisions editable as you did with the tasks?
+can you make the Risks editable as you did with the tasks?
+The headers a still not floating, so when I scroll down the header disappears
+offer a bilingual solution, I would like to have all words and phrases exported to en excel sheet with Hungarian rough translation version pre-filled by you, and when the excel sheet is approved by the Hungarian  editor, I can share it with you and you create the Hungarian version, the excel should follow the HTML logic, like headers, dashboard, tasks, timeline etc, for easier editing.
+Create editable owner/team database on a separate tab, the owners can be added to tasks, decision from select list
+
+21:52
+
+Orchestrated fixes for headers, risks, decisions, bilingual Excel export, and team database integration
+Orchestrated fixes for headers, risks, decisions, bilingual Excel export, and team database integration
+Most of this matches your previous message — and three of the items (decisions editable, risks editable, the Team owner-database with owner select) are already in the shipped app.js. The two things genuinely worth acting on are the floating header (still failing for you) and the pre-filled rough Hungarian in the Excel. Let me handle both, plus make the header bulletproof.
+
+First, why the header likely still fails for you: the column header was set to only appear on wider screens, so in a narrow preview pane it isn't shown at all. I'll make it always visible and reliably pinned, and bump the visible version label to v0.3 so you can confirm you're running the new file.
+
+
+Architecting Hungarian translation dictionaries for Excel rebuild
+Architecting Hungarian translation dictionaries for Excel rebuild
+The Team card also needs to be a scroll container for its sticky header. Let me update it and bump the version:
+
+
+Architected comprehensive Hungarian translation framework with bilingual Excel structure
+Architected comprehensive Hungarian translation framework with bilingual Excel structure
+App shipped as v0.3 — when you load it, the header should now read "Launch Control · v0.3" so you can confirm you're on the new build, and the column headers will stay pinned as you scroll within the Tasks, Team (and the Timeline week-axis).
+
+Now the substantial new piece: a fully pre-filled rough Hungarian translation in the Excel. Let me rebuild the workbook with my draft Hungarian in every yellow column.
+
+
+Strategized rebuilding workbook with Hungarian dictionary integration
+Strategized rebuilding workbook with Hungarian dictionary integration
+All Hungarian drafts loaded. Now rebuild the workbook populating every Hungarian column:
+
+
+Identified missing content element and located its position
+Identified missing content element and located its position
+One cell is missing a Hungarian draft — let me find and check it:
+
+
+Identified missing Hungarian translation and patched dependency
+Identified missing Hungarian translation and patched dependency
+A dependency value ("Tracking + landing pages") wasn't in my map. Let me add it and rebuild:
+
+
+Ran 2 commands
+Ran 2 commands
+Complete — every Hungarian cell is filled, zero errors. Presenting the updated files:
+
+
+Presented 3 files
+Presented 3 files
+Here's where each item stands.
+
+Decisions, Risks, and the owner/team database were already built into the app in the previous round and are in this app.js too: both the Decisions and Risks tabs have a + Add button and a pencil to edit/delete every field, the Team tab lets you add/edit/delete people, and the owner field on tasks, decisions, and risks is a tap-to-select chip list drawn from that Team list. If those aren't showing for you, it's almost certainly a caching/old-file issue — which the version label now helps you check.
+
+The floating header — what changed and how to verify. My earlier fix relied on the page scrolling, which fails inside an auto-expanding preview frame, and the header was also hidden on narrow screens. Now: the Tasks and Team tables are their own bounded scroll boxes, the header is always shown and pinned to the top of that box, and the Timeline's week-axis and left task-name column stay pinned. To confirm you're running the new build, the top-left label now reads "Launch Control · v0.3" — if it still says v0.2, your browser or GitHub is serving the old app.js (hard-refresh, or confirm the file uploaded).
+
+Bilingual Excel, now with rough Hungarian pre-filled. The workbook has the same section-by-section structure (README, UI, Enums, Gates, Workstreams, Tasks, Decisions, Risks, Checklists, Journey, Runbook, Team), but every yellow Hungarian column is now filled with my draft translation — all 54 tasks, 11 decisions, 10 risks, 27 checklist items, the journey, the runbook, and ~120 UI strings. Grey columns stay read-only reference.
+
+Two honest notes for your editor:
+
+These are an AI rough draft — the README says so explicitly. They need a native review for tone and terminology (a few I'd flag myself: "tölcsér" for funnel is literal but standard in HU marketing; "Auto/NPS" I left untranslated; brand name kept as-is). Sensitive-domain wording — the abuse/triage/clinical lines — should be checked carefully by someone who knows the Hungarian referral landscape (NANE, Eszter Alapítvány are kept verbatim).
+Placeholders like {n}, {total}, {done}, {id} must stay inside the Hungarian text — they're filled in live by the app.
+When the editor has corrected it, send it back and I'll load the Hungarian into the app keyed by these IDs and add an EN/HU toggle. Hungarian runs longer than English, so I'll check button widths at that point.
+
+
+Fenntarthato valas localization en hu
+Spreadsheet · XLSX 
+
+App
+JS 
+
+Index
+Code · HTML 
+OK, now help me to set this us in my github, I ahve already created the 
+https://github.com/gabort-maps/Fenntarthato-Valas
+what is the next step?
+
+22:03
+
+Charted GitHub Pages deployment steps for beginner developer
+Charted GitHub Pages deployment steps for beginner developer
+The repo exists — you just need to upload the two files and flip one setting. Here's the step-by-step:
+
+Step 1 — Upload the files
+
+Go to your repo: https://github.com/gabort-maps/Fenntarthato-Valas. On the main page, click the "Add file" button (top right, above the file list) → "Upload files". Drag in both index.html and app.js (the two files from this chat). At the bottom, click "Commit changes" (the default commit message is fine).
+
+Step 2 — Enable GitHub Pages
+
+Once the files are committed, go to Settings (the gear tab at the top of the repo) → scroll down the left sidebar to Pages. Under "Build and deployment":
+
+Source: select "Deploy from a branch"
+Branch: select main, folder / (root)
+Click Save
+Step 3 — Wait ~60 seconds, then visit your site
+
+GitHub builds it automatically. Your live URL will be:
+
+https://gabort-maps.github.io/Fenntarthato-Valas/
+
+That's it — three clicks, no terminal, no build step. The app runs exactly as you see it here, with localStorage working for persistence.
+
+One thing to keep in mind for future updates: when I give you a new app.js, you just go to the file on GitHub, click the pencil (edit) icon, paste the new content, and commit. Or use the same "Upload files" flow to replace it — GitHub will overwrite the old version.
+
+Want me to check whether the repo is public (it needs to be for free GitHub Pages), or anything else before you go ahead?
+
+ok, where can I rename the files as It dowloaded as index(12).html
+
+22:14
+
+Identified file renaming issue and prepared Windows instructions
+Identified file renaming issue and prepared Windows instructions
+Just rename them in your Downloads folder before uploading to GitHub.
+
+On your Windows PC: open File Explorer, go to your Downloads folder, find the two files, right-click each one → Rename:
+
+index(12).html → index.html
+app(5).js (or whatever number) → app.js
+If Windows warns you about changing the extension, click Yes — you're not actually changing the extension, just removing the (12) part.
+
+Then drag both renamed files into the GitHub upload page. GitHub needs them named exactly index.html and app.js (no numbers, no spaces) because index.html loads app.js by that exact name.
+
+but its already uploaded
+
+22:14
+
+Weighed renaming versus deletion strategies for uploaded files
+Weighed renaming versus deletion strategies for uploaded files
+No problem — you can rename them directly on GitHub:
+
+Go to your repo and click on index(12).html to open it
+Click the pencil icon (edit) at the top right of the file
+At the very top of the editor, you'll see the filename — it's an editable text field. Click on it and change index(12).html to index.html
+Click "Commit changes" (green button)
+Do the same for the JS file — rename it to app.js.
+
+After both are renamed, you can delete any other duplicate files (click the file → click the three dots "⋯" menu → Delete file → commit).
+
+Can you check  why T001-T006 do not show in the time line?
+
+6:19
+
+Investigating whether deployed version matches latest code fixes
+Investigating whether deployed version matches latest code fixes
+Let me check your deployed site to see what's happening.
+
+
+Investigated deployed code to diagnose missing timeline entries
+Investigated deployed code to diagnose missing timeline entries
+Repo looks good — files named correctly. Let me check the actual app.js version deployed to see what timeline code is running:
+
+
+Diagnosed missing tasks caused by color mapping typo
+Diagnosed missing tasks caused by color mapping typo
+I don't need to see the deployed file — I just found the bug in my code. There's a typo in the Timeline's colour map. The gate key for the first gate is "offer", but in the colour function I wrote "offset":
+
+js
+// BUG: "offset" should be "offer"
+const colorFor = g=>({offset:"var(--sage)", ...}[g]);
+So colorFor("offer") returns undefined — the bars render but with no background colour, making them invisible. Same typo in the legend labels. Let me fix it:
+
+
+Verified code fix and prepared file for delivery
+Verified code fix and prepared file for delivery
+Fix confirmed: offer: "var(--sage)" in compiled output, offset gone. Let me ship it.
+
+
+Identified critical timeline display bug
+Identified critical timeline display bug
+Good catch. It was a one-character typo — the timeline colour map had offset instead of offer as the key for the first gate. Since no task's gate key matched "offset", colorFor("offer") returned undefined, and the bars for T001–T006 rendered with no background colour — effectively invisible.
+
+Now version v0.4 — the six "Offer locked" bars will show in sage green at the left end of the timeline, exactly where they should be.
+
+To update on GitHub: go to your app.js file in the repo, click the pencil to edit, select all (Ctrl+A), paste the new content from the downloaded file, and commit. Or use "Add file → Upload files" to replace it. After committing, give GitHub Pages about a minute to redeploy, then hard-refresh the page (Ctrl+Shift+R) to clear the browser cache.
+
+
+App
+JS 
+
+
+
+
+
+Claude is AI and can make mistakes. Please double-check cited sources.
+App · JS
 const {
   useState,
   useMemo,
   useEffect,
   useRef
 } = React;
-
+ 
 /* ---------- persistence (localStorage on GitHub; safe no-op in sandbox) ---------- */
 const STORE_KEY = "fv_launch_control_v1";
 const store = {
@@ -27,7 +656,7 @@ const store = {
     } catch (e) {}
   }
 };
-
+ 
 /* ---------- reference data ---------- */
 const GATES = [{
   key: "offer",
@@ -116,7 +745,7 @@ const WORKSTREAMS = [{
   owner: "Netmarketing / Coordinator",
   risk: "Low/Medium"
 }];
-
+ 
 // [id, workstream, gate, type, task, owner, priority, risk, status, dependency, output, offset, duration]
 const RAW_TASKS = [["T001", "Strategy & offer lock", "offer", "Concrete", "Finalize group programme pricing", "Péter", "Critical", "High", "Open", "None", "Final price sheet", -56, 3], ["T002", "Strategy & offer lock", "offer", "Concrete", "Determine individual programme pricing", "Péter", "High", "Medium", "Open", "None", "Final individual offer", -56, 3], ["T003", "Strategy & offer lock", "offer", "Concrete", "Decide installment payment option", "Péter / Finance", "Critical", "High", "Open", "Pricing decision", "Payment terms", -55, 2], ["T004", "Strategy & offer lock", "offer", "Implied", "Reconcile conflicting launch dates", "Péter / Coordinator", "Critical", "High", "Open", "Leadership decision", "Single launch timeline", -56, 2], ["T005", "Strategy & offer lock", "offer", "Implied", "Reconcile conflicting pricing structures", "Péter / Coordinator", "Critical", "High", "Open", "Leadership decision", "Single pricing logic", -56, 2], ["T006", "Strategy & offer lock", "offer", "Implied", "Freeze offer claims for ads, webinar, landing pages and emails", "Péter / Netmarketing", "High", "High", "Open", "T001-T005", "Offer claim sheet", -52, 4], ["T007", "Client journey & service blueprint", "journey", "Concrete", "Map the 6-stage funnel from cold outreach to onboarding", "Coordinator / Netmarketing", "High", "Medium", "Open", "Offer lock", "Client journey map", -49, 5], ["T008", "Client journey & service blueprint", "journey", "Concrete", "Finalize 10-week curriculum and 6 modules", "Péter / Mentor lead", "High", "Medium", "Open", "Programme content", "Programme module map", -47, 7], ["T009", "Client journey & service blueprint", "journey", "Concrete", "Confirm 3-phase support model: Assessment, Preparation, Support", "Péter / Kata", "High", "Medium", "Open", "Service concept", "Service blueprint", -46, 4], ["T010", "Client journey & service blueprint", "journey", "Implied", "Create SOP for diagnostic-to-programme routing", "Coordinator / Mentor lead", "Critical", "High", "Open", "Triage rules", "Routing SOP", -42, 6], ["T011", "Client journey & service blueprint", "journey", "Implied", "Define mentor boundaries and exclusions", "Péter / Legal / Mentor lead", "Critical", "High", "Open", "Triage SOP", "Boundary note", -40, 5], ["T012", "Diagnostics, triage & escalation", "journey", "Concrete", "Administer 30–45 minute diagnostic questionnaire", "Mentors", "High", "Medium", "Open", "Questionnaire digitised", "Diagnostic workflow", -35, 5], ["T013", "Diagnostics, triage & escalation", "journey", "Concrete", "Screen for abuse and redirect to NANE / Eszter Alapítvány", "Mentor lead", "Critical", "High", "Open", "Triage SOP", "Abuse referral pathway", -35, 4], ["T014", "Diagnostics, triage & escalation", "journey", "Concrete", "Exclude acute clinical-crisis cases and refer to psychiatric care", "Mentor lead / Psychologist", "Critical", "High", "Open", "Triage SOP", "Clinical referral pathway", -35, 4], ["T015", "Diagnostics, triage & escalation", "journey", "Implied", "Train mentors on exact triage protocol and red flags", "Mentor lead", "Critical", "High", "Open", "Triage SOP", "Mentor training session", -28, 3], ["T016", "Diagnostics, triage & escalation", "journey", "Implied", "Convert Word questionnaire into secure digital format", "Web / GDPR owner", "Critical", "High", "Open", "Data workflow", "Secure digital questionnaire", -34, 8], ["T017", "Expert network & role governance", "delivery", "Concrete", "Coordinate external experts: lawyer, psychologist, child psychologist, mediator, financial adviser", "Kata / Coordinator", "High", "Medium", "Open", "Expert list", "Expert coordination plan", -35, 7], ["T018", "Expert network & role governance", "delivery", "Concrete", "Enforce 24-hour feedback/approval window for Péter on marketing materials", "Péter / Netmarketing", "High", "Medium", "Open", "Content calendar", "Approval workflow", -35, 30], ["T019", "Expert network & role governance", "delivery", "Implied", "Establish SLAs and availability schedules for named experts", "Coordinator", "High", "Medium", "Open", "Expert confirmation", "Expert SLA sheet", -32, 7], ["T020", "Expert network & role governance", "delivery", "Implied", "Brief experts on methodology and boundaries", "Péter / Coordinator", "High", "Medium", "Open", "Expert RACI", "Expert briefing pack", -28, 5], ["T021", "Marketing funnel & content production", "funnel", "Concrete", "Write, approve and schedule 18 social media posts", "Netmarketing / Péter", "High", "Medium", "Open", "Offer lock", "Approved posts", -35, 21], ["T022", "Marketing funnel & content production", "funnel", "Concrete", "Shoot, edit and subtitle 30 short-form videos", "Netmarketing / Videographer / Péter", "High", "High", "Open", "Script approval", "Video asset pack", -35, 24], ["T023", "Marketing funnel & content production", "funnel", "Concrete", "Publish 3 SEO blog articles", "Netmarketing", "Medium", "Low", "Open", "Content approval", "Published blogs", -28, 14], ["T024", "Marketing funnel & content production", "funnel", "Concrete", "Produce 5 new lead magnets", "Netmarketing / Péter", "High", "Medium", "Open", "Offer and audience priorities", "Lead magnet assets", -35, 21], ["T025", "Marketing funnel & content production", "funnel", "Concrete", "Launch Google Search and Meta Ads with A/B tested hooks", "Netmarketing PPC", "High", "High", "Open", "Tracking + landing pages", "Live campaigns", -7, 28], ["T026", "Marketing funnel & content production", "funnel", "Implied", "Create strict content scheduling grid and prioritise launch-critical assets", "Coordinator / Netmarketing", "High", "High", "Open", "Content inventory", "Launch-critical content calendar", -42, 7], ["T027", "Community & webinar operations", "funnel", "Concrete", "Manage closed Facebook group using 12-week calendar", "Péter / Community manager", "Medium", "Medium", "Open", "Group rules", "Community operations plan", -35, 84], ["T028", "Community & webinar operations", "funnel", "Concrete", "Host 60-minute webinar", "Péter", "High", "Medium", "Open", "Platform + deck + registration", "Webinar delivered", -12, 1], ["T029", "Community & webinar operations", "funnel", "Concrete", "Assign moderator to filter chat questions during webinar", "Marketing / Moderator", "Medium", "Medium", "Open", "Webinar runbook", "Moderator role confirmed", -13, 1], ["T030", "Community & webinar operations", "funnel", "Concrete", "Provide 48-hour webinar replay", "Netmarketing / Web", "Medium", "Low", "Open", "Recording and email sequence", "Replay live", -11, 3], ["T031", "Community & webinar operations", "funnel", "Implied", "Run webinar technical dry-run", "Coordinator / Netmarketing", "High", "Medium", "Open", "Platform selected", "Dry-run checklist", -16, 1], ["T032", "Technology, payments & automation", "funnel", "Concrete", "Set up general 5-day welcome email sequence in MailerLite", "Netmarketing / Web", "High", "Medium", "Open", "Email copy approved", "Automation live", -35, 5], ["T033", "Technology, payments & automation", "funnel", "Concrete", "Set up fathers' 5-day welcome email sequence in MailerLite", "Netmarketing / Web", "High", "Medium", "Open", "Email copy approved", "Automation live", -35, 5], ["T034", "Technology, payments & automation", "funnel", "Concrete", "Configure 6-email sales sequence", "Netmarketing / Web", "High", "Medium", "Open", "Offer lock", "Sales automation", -28, 5], ["T035", "Technology, payments & automation", "funnel", "Concrete", "Build lead magnet and programme landing pages", "Web / Netmarketing", "High", "High", "Open", "LP copy approved", "Landing pages live", -35, 14], ["T036", "Technology, payments & automation", "funnel", "Implied", "Connect payment gateway to course platform and email CRM", "Web / Finance", "Critical", "High", "Open", "Payment gateway selected", "Integrated checkout flow", -24, 7], ["T037", "Technology, payments & automation", "funnel", "Concrete", "Select payment gateway: SimplePay vs Stripe", "Web / Finance / Péter", "Critical", "High", "Open", "Finance decision", "Gateway decision", -56, 2], ["T038", "GDPR, consent & data handling", "journey", "Concrete", "Include GDPR text and unsubscribe links in all lead capture forms", "Netmarketing / Legal", "High", "Medium", "Open", "Legal review", "Compliant forms", -35, 7], ["T039", "GDPR, consent & data handling", "journey", "Concrete", "Secure explicit written consent for testimonials", "Netmarketing / Legal", "Medium", "Medium", "Open", "Consent wording", "Testimonial consent process", -28, 5], ["T040", "GDPR, consent & data handling", "journey", "Concrete", "Ensure client data is shared with experts strictly within GDPR rules", "GDPR owner / Coordinator", "Critical", "High", "Open", "Expert RACI + consent", "Expert data-sharing protocol", -35, 7], ["T041", "GDPR, consent & data handling", "journey", "Implied", "Establish secure encrypted storage and transmission protocol for diagnostics", "GDPR owner / Web", "Critical", "High", "Open", "Data owner appointed", "Data handling SOP", -42, 10], ["T042", "GDPR, consent & data handling", "journey", "Implied", "Legal review of Privacy Policy and Terms & Conditions", "Legal / GDPR owner", "Critical", "High", "Open", "Service workflow", "Legal sign-off", -35, 7], ["T043", "Sales, onboarding & customer support", "delivery", "Concrete", "Send 3–5 onboarding emails after purchase", "Kata / Netmarketing", "High", "Medium", "Open", "Payment trigger", "Onboarding sequence", 0, 3], ["T044", "Sales, onboarding & customer support", "delivery", "Concrete", "Host online kick-off live event", "Péter / Kata", "High", "Medium", "Open", "Participant list + programme access", "Kickoff delivered", 0, 1], ["T045", "Sales, onboarding & customer support", "delivery", "Concrete", "Answer Facebook group private messages within 24 hours", "Péter / Community support", "Medium", "Medium", "Open", "Support ownership", "Response SOP", 0, 14], ["T046", "Sales, onboarding & customer support", "delivery", "Concrete", "Process 2-week money-back guarantee if requested", "Kata / Finance", "Medium", "Medium", "Open", "Refund policy", "Refund workflow", 14, 7], ["T047", "Sales, onboarding & customer support", "delivery", "Implied", "Set up dedicated customer support inbox", "Kata / Support owner", "High", "Medium", "Open", "Support owner", "Support inbox live", -21, 4], ["T048", "Sales, onboarding & customer support", "delivery", "Concrete", "Populate e-learning platform with Week 1 content before kick-off", "Péter / Course admin", "High", "Medium", "Open", "Curriculum and platform", "Week 1 content live", -14, 7], ["T049", "Measurement & post-launch control", "funnel", "Concrete", "Configure UTM tracking for all URLs", "Netmarketing analytics", "High", "Medium", "Open", "URL list", "UTM framework", -28, 4], ["T050", "Measurement & post-launch control", "funnel", "Concrete", "Set up GA4 conversions", "Netmarketing analytics", "High", "Medium", "Open", "Landing pages", "GA4 conversion events", -28, 4], ["T051", "Measurement & post-launch control", "funnel", "Concrete", "Configure Meta Pixel events", "Netmarketing analytics", "High", "Medium", "Open", "Landing pages", "Pixel events", -28, 4], ["T052", "Measurement & post-launch control", "funnel", "Concrete", "Monitor KPIs: CPL < 4,500 Ft and email open rate >35%", "Netmarketing / Coordinator", "Medium", "Low", "Open", "Dashboard setup", "Weekly KPI report", -7, 35], ["T053", "Measurement & post-launch control", "funnel", "Concrete", "Send NPS survey 2 weeks after programme start", "Kata / Netmarketing", "Medium", "Low", "Open", "Participant list", "NPS results", 14, 1], ["T054", "Measurement & post-launch control", "funnel", "Implied", "Reallocate ad budget based on A/B test performance", "Netmarketing PPC", "Medium", "Low", "Open", "Campaign data", "Budget optimisation log", -1, 28]];
 const taskFromRaw = r => ({
@@ -164,7 +793,7 @@ const RUNBOOK = [["Day -14", "Readiness gate review", "Check offer, journey, fun
 const JOURNEY = [["1. Awareness", "Sees content, ad, blog, video or podcast", "Drive traffic to lead magnet or community", "Netmarketing / Péter", "Claims must match boundaries"], ["2. Lead magnet", "Downloads free resource", "Capture consent and trigger email sequence", "Netmarketing / Web", "GDPR consent required"], ["3. Nurturing", "Reads emails, joins Facebook group", "Build trust and educate", "Péter / Community manager", "Community moderation"], ["4. Diagnostic", "Completes 30–45 minute questionnaire", "Assess emotional, legal, financial, parenting and risk baseline", "Mentor lead", "Sensitive data + triage"], ["5. Triage / routing", "Receives next-step recommendation", "Route to group, individual, expert or external support", "Mentor lead / Coordinator", "Abuse/clinical red flags"], ["6. Webinar", "Registers and attends live webinar", "Deliver value and pitch programme", "Péter / Moderator", "Tech and sales clarity"], ["7. Purchase", "Buys group or individual programme", "Process payment, confirmation and access", "Web / Finance / Kata", "Payment automation"], ["8. Onboarding", "Receives emails and joins kickoff", "Set expectations, access, rules and support routes", "Kata / Péter", "Client anxiety/support"], ["9. Delivery", "Attends sessions / workshops", "Provide group or individual preparation", "Péter / Mentors / Experts", "Role boundaries"], ["10. Learning loop", "Completes NPS and feedback", "Measure experience and improve funnel/service", "Kata / Netmarketing", "Consent for testimonials"]];
 const STATUS_OPTS = ["Open", "In progress", "At risk", "Blocked", "Done", "Deferred"];
 const PRIORITY_OPTS = ["Critical", "High", "Medium", "Low"];
-
+ 
 // Editable owner / team directory. Owners on tasks, decisions and risks are chosen from this.
 const TEAM_DEF = [["P01", "Péter", "Founder, lead mentor"], ["P02", "Kata", "Operations & client success"], ["P03", "Coordinator", "Launch coordinator"], ["P04", "Netmarketing", "Marketing agency"], ["P05", "Web", "Web & development"], ["P06", "Finance", "Finance"], ["P07", "Legal", "Legal counsel"], ["P08", "GDPR owner", "Data protection"], ["P09", "Mentor lead", "Mentor team lead"], ["P10", "Psychologist", "Clinical screening"], ["P11", "Child psychologist", "Child protection"], ["P12", "Moderator", "Webinar / community moderation"], ["P13", "Community manager", "Facebook group"], ["P14", "Support owner", "Customer support"], ["P15", "Course admin", "E-learning platform"], ["P16", "Analytics", "Tracking & measurement"], ["P17", "Videographer", "Video production"]];
 const teamFromRaw = r => ({
@@ -225,7 +854,7 @@ function OwnerPicker({
     }
   }, "Add people on the Team tab first."));
 }
-
+ 
 /* ---------- helpers ---------- */
 const DAY = 86400000;
 const fmt = d => d.toLocaleDateString("en-GB", {
@@ -307,7 +936,7 @@ function sevDot(level) {
     }
   });
 }
-
+ 
 /* ---------- small UI atoms ---------- */
 function Pill({
   children,
@@ -357,7 +986,7 @@ function StatusSelect({
     }
   }, o)));
 }
-
+ 
 /* ---------- Dashboard ---------- */
 function GateCard({
   gate,
@@ -458,7 +1087,7 @@ function GateCard({
     }
   }, "Owner \xB7 ", gate.owner));
 }
-
+ 
 // Automatic gate colour from the underlying work.
 function computeGate(key, tasks, decisions) {
   const t = tasks.filter(x => x.gate === key);
@@ -795,7 +1424,7 @@ function SectionTitle({
     }
   }, children);
 }
-
+ 
 /* ---------- Tasks ---------- */
 function TasksView({
   state,
@@ -1347,7 +1976,7 @@ function Select({
     value: v
   }, l)));
 }
-
+ 
 /* ---------- Timeline / Gantt ---------- */
 function Timeline({
   tasks,
@@ -1361,7 +1990,7 @@ function Timeline({
   const weeks = [];
   for (let d = new Date(ganttStart); d <= ganttEnd; d = addDays(d, 7)) weeks.push(new Date(d));
   const colorFor = g => ({
-    offset: "var(--sage)",
+    offer: "var(--sage)",
     journey: "var(--blue)",
     funnel: "var(--amber)",
     delivery: "var(--green)"
@@ -1371,7 +2000,7 @@ function Timeline({
   const pos = d => clamp((startOfDay(d) - ganttStart) / DAY / total * 100);
   const sorted = [...tasks].sort((a, b) => a.start - b.start);
   const chartMin = Math.max(640, total * 11); // ~11px per day so bars are legible
-
+ 
   return /*#__PURE__*/React.createElement("div", {
     style: {
       background: "var(--card)",
@@ -1385,7 +2014,7 @@ function Timeline({
       padding: "12px 16px 10px",
       fontSize: 11.5
     }
-  }, [["offset", "Offer"], ["journey", "Client journey"], ["funnel", "Funnel"], ["delivery", "Delivery"]].map(([k, l]) => /*#__PURE__*/React.createElement("span", {
+  }, [["offer", "Offer"], ["journey", "Client journey"], ["funnel", "Funnel"], ["delivery", "Delivery"]].map(([k, l]) => /*#__PURE__*/React.createElement("span", {
     key: k,
     style: {
       display: "inline-flex",
@@ -1576,7 +2205,7 @@ function Timeline({
     }
   }), "Today")));
 }
-
+ 
 /* ---------- generic record editor (decisions / risks) ---------- */
 function RecordEditor({
   title,
@@ -1883,7 +2512,7 @@ const RISK_FIELDS = [{
   label: "Escalation path",
   type: "text"
 }];
-
+ 
 /* ---------- Decisions ---------- */
 function DecisionsView({
   state,
@@ -2019,7 +2648,7 @@ function DecisionsView({
     onClose: () => setEd(null)
   }));
 }
-
+ 
 /* ---------- Risks ---------- */
 function RisksView({
   state,
@@ -2161,7 +2790,7 @@ function RisksView({
     onClose: () => setEd(null)
   }));
 }
-
+ 
 /* ---------- Checklists ---------- */
 function Checklist({
   title,
@@ -2281,7 +2910,7 @@ function ChecklistsView({
     setState: setState
   }));
 }
-
+ 
 /* ---------- Team / owners directory ---------- */
 const TEAM_FIELDS = [{
   key: "name",
@@ -2420,7 +3049,7 @@ function TeamView({
     onClose: () => setEd(null)
   }));
 }
-
+ 
 /* ---------- Reference (journey, RACI-ish, runbook) ---------- */
 function ReferenceView({
   state,
@@ -2527,7 +3156,7 @@ function ReferenceView({
     fg: "var(--ink-soft)"
   }, d[3]))))));
 }
-
+ 
 /* ---------- App shell ---------- */
 const NAV = [["dashboard", "Dashboard"], ["tasks", "Tasks"], ["timeline", "Timeline"], ["decisions", "Decisions"], ["risks", "Risks"], ["checklists", "Checklists"], ["reference", "Journey & Runbook"], ["team", "Team"]];
 const MILESTONES_DEF = [{
@@ -2578,7 +3207,7 @@ function defaultState() {
     runbook: {}
   };
 }
-
+ 
 // Bring older saved data forward without losing the user's edits.
 function migrate(s) {
   const base = defaultState();
@@ -2630,7 +3259,7 @@ function App() {
     return () => clearTimeout(t);
   }, [state]);
   const launchDate = useMemo(() => startOfDay(new Date(state.launch + "T00:00:00")), [state.launch]);
-
+ 
   // computed task list with live dates from each task's own offset + duration
   const tasks = useMemo(() => state.tasks.map(t => {
     const start = addDays(launchDate, Number(t.offset) || 0);
@@ -2641,13 +3270,13 @@ function App() {
       due
     };
   }), [launchDate, state.tasks]);
-
+ 
   // milestones come from editable offsets in state
   const milestones = useMemo(() => state.milestones.map(m => ({
     ...m,
     date: addDays(launchDate, Number(m.offset) || 0)
   })), [state.milestones, launchDate]);
-
+ 
   // gantt window stretches to cover every task and milestone, never clipping bars
   const {
     ganttStart,
@@ -2707,7 +3336,7 @@ function App() {
       color: "var(--sage)",
       fontWeight: 600
     }
-  }, "Launch Control \xB7 v0.3"), /*#__PURE__*/React.createElement("h1", {
+  }, "Launch Control \xB7 v0.4"), /*#__PURE__*/React.createElement("h1", {
     className: "font-display",
     style: {
       fontSize: 30,
@@ -2858,3 +3487,6 @@ function App() {
   }, "Single source of operational truth. Change one launch date; all task dates and the timeline recalculate. Edits save automatically in this browser."));
 }
 ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
+ 
+
+
